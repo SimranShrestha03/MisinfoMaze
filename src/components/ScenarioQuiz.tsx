@@ -95,12 +95,14 @@ const ScenarioQuiz: React.FC<ScenarioQuizProps> = ({ questions, onComplete, soun
             </p>
           </div>
 
-          {/* Message */}
-          <div className="mb-8 p-6 bg-gray-100 rounded-xl border-2 border-gray-300">
-            <p className="text-lg text-gray-800 leading-relaxed font-medium">
-              "{currentQuestion.message}"
-            </p>
-          </div>
+          {/* Message - Only show if not empty */}
+          {currentQuestion.message && (
+            <div className="mb-8 p-6 bg-gray-100 rounded-xl border-2 border-gray-300">
+              <p className="text-lg text-gray-800 leading-relaxed font-medium">
+                "{currentQuestion.message}"
+              </p>
+            </div>
+          )}
 
           {/* Image (if available) */}
           {currentQuestion.image && (
@@ -124,65 +126,49 @@ const ScenarioQuiz: React.FC<ScenarioQuizProps> = ({ questions, onComplete, soun
             </h3>
           </div>
 
-          {/* Options */}
-          <div className="space-y-4 mb-8">
-            {currentQuestion.options.map((option, index) => (
-              <div 
-                key={index}
-                onClick={() => handleOptionSelect(index)}
-                className={`p-6 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-105 border-2 shadow-lg group ${
-                  selectedOption === index
-                    ? isCorrect 
-                      ? 'bg-green-50 border-green-400 ring-4 ring-green-200' 
-                      : 'bg-red-50 border-red-400 ring-4 ring-red-200'
-                    : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-purple-300'
-                } ${selectedOption === index ? shakeClass : ''}`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg ${
-                    selectedOption === index
-                      ? isCorrect 
-                        ? 'bg-green-500 text-white' 
-                        : 'bg-red-500 text-white'
-                      : 'bg-gray-200 text-gray-600 group-hover:bg-purple-200 group-hover:text-purple-700'
-                  }`}>
-                    {String.fromCharCode(65 + index)} {/* A, B, C, etc. */}
+          {/* Options - Only show if no option selected */}
+          {!showExplanation && (
+            <div className="space-y-4 mb-8">
+              {currentQuestion.options.map((option, index) => (
+                <div 
+                  key={index}
+                  onClick={() => handleOptionSelect(index)}
+                  className="p-6 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-105 border-2 shadow-lg group bg-white hover:bg-gray-50 border-gray-200 hover:border-purple-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg bg-gray-200 text-gray-600 group-hover:bg-purple-200 group-hover:text-purple-700">
+                      {String.fromCharCode(65 + index)} {/* A, B, C, etc. */}
+                    </div>
+                    <p className="text-lg text-gray-800 leading-relaxed">
+                      {option}
+                    </p>
                   </div>
-                  <p className="text-lg text-gray-800 leading-relaxed">
-                    {option}
-                  </p>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
-          {/* Explanation */}
+          {/* Feedback - Show only after option selected */}
           {showExplanation && (
-            <div className={`p-6 rounded-2xl mb-8 transition-all duration-300 ${
-              isCorrect 
-                ? 'bg-green-50 border-2 border-green-200 text-green-800' 
-                : 'bg-red-50 border-2 border-red-200 text-red-800'
-            }`}>
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="text-2xl">
-                  {isCorrect ? '✅' : '❌'}
-                </span>
-                {isCorrect ? 'Correct!' : 'Incorrect!'}
-              </h3>
-              <p className="text-lg leading-relaxed mb-4">
-                {currentQuestion.explanation}
+            <div className="p-6 rounded-2xl mb-8 transition-all duration-300 bg-white border-2 border-gray-200">
+              <p className="text-lg leading-relaxed mb-4 whitespace-pre-line text-gray-800">
+                {currentQuestion.feedback[selectedOption!]}
               </p>
             </div>
           )}
 
-          {/* Next Button */}
+          {/* Dynamic Button */}
           {showExplanation && (
             <div className="flex justify-center">
               <button 
                 onClick={handleNext} 
                 className="px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold text-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                {currentIndex < questions.length - 1 ? 'Next Scenario' : 'See Results'}
+                {currentIndex < 4 ? 
+                  (currentIndex === 3 && selectedOption === 0 ? 'Go Home' : 
+                   currentIndex === 3 && selectedOption === 1 ? 'Go rest' : 
+                   'Continue Your Day') : 
+                  'See Results'}
               </button>
             </div>
           )}

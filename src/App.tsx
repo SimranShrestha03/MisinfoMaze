@@ -62,17 +62,9 @@ function App() {
     return allImageQuestions.slice(0, 10);
   }, []);
 
-  // Get 5 random questions for scenario quiz from pool of 25
+  // Get first 5 questions for scenario quiz in order (no shuffling)
   const scenarioQuizQuestions = React.useMemo(() => {
-    const allScenarioQuestions = [...scenarioQuestions];
-    
-    // Shuffle the array using Fisher-Yates algorithm
-    for (let i = allScenarioQuestions.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [allScenarioQuestions[i], allScenarioQuestions[j]] = [allScenarioQuestions[j], allScenarioQuestions[i]];
-    }
-    
-    return allScenarioQuestions.slice(0, 5); // Return only 5 questions
+    return scenarioQuestions.slice(0, 5); // Return first 5 questions in order
   }, []);
 
   const handleSelectFacts = () => {
