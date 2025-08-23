@@ -12,7 +12,7 @@ export const scenarioQuestions: ScenarioQuestion[] = [
   {
     id: 1,
     scenario: "You hear a ding on your phone. You look down and see it is your aunt Kathy (she and her husband are what some might call conspiracy theorists).",
-    message: "Hate to break this to all of the morons who call themselves Journalists. COVID literally stands for 'Chinese Originated Viral Infectious Disease' and the number 19 is due to this being the 19th virus to come out of China.",
+    message: "",
     image: "/images/aunt_kathy.jpg",
     options: [
       "Reply 'That's interesting, I'll look into it' and share it with your friends",
@@ -82,11 +82,11 @@ export const scenarioQuestions: ScenarioQuestion[] = [
       "Fact-check the claims and share reliable information"
     ],
     correctOption: 2,
-    explanation: "COVID-19 vaccines do not contain microchips or tracking devices. This is a common conspiracy theory. Vaccines contain only the ingredients needed to trigger an immune response. Fact-checking and sharing accurate information helps combat misinformation.",
-    feedback: {
-      correct: "You fact-check the claims and find they are completely false. You share reliable information about vaccine ingredients and explain why microchips in vaccines are impossible. Your cousin appreciates your thoughtful response.",
-      incorrect: "You share the video widely, causing panic and fear among your friends and family. Several people become hesitant about vaccination, potentially putting themselves and others at risk of serious illness."
-    }
+    feedback: [
+      "You share the video with your family and friends, causing widespread panic. Several people become terrified of vaccines and refuse to get vaccinated. Your cousin later finds out the video was completely false and blames you for spreading misinformation.\n\nYou feel guilty for causing unnecessary fear and realize the importance of fact-checking before sharing.",
+      "You ignore the message, but later hear from other family members that they're scared of vaccines because of similar videos. You realize that staying silent allowed misinformation to spread unchecked.\n\nYou wish you had taken action to help combat the false information.",
+      "You research the claims and find they're completely false. You send your cousin reliable sources explaining that vaccines contain only safe ingredients and cannot track people.\n\nYour cousin thanks you for the information and decides to get vaccinated. You feel good about helping prevent the spread of misinformation."
+    ]
   },
   {
     id: 6,
