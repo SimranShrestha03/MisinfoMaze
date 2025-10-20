@@ -56,14 +56,14 @@ const ImageReview: React.FC<ImageReviewProps> = ({ questions, answers, onBack })
                 {item.isCorrect === true && (
                   <div className="flex items-center text-green-600">
                     <CheckCircle size={18} className="mr-1" />
-                    <span className="font-medium">Correct</span>
+                    <span className="font-medium">Reliable</span>
                   </div>
                 )}
                 
                 {item.isCorrect === false && (
                   <div className="flex items-center text-red-600">
                     <XCircle size={18} className="mr-1" />
-                    <span className="font-medium">Incorrect</span>
+                    <span className="font-medium">Unreliable</span>
                   </div>
                 )}
                 

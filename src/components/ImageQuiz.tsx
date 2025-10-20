@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import CountdownTimer from './CountdownTimer';
 import { ImageQuestion } from '../data/imageQuestions';
 
 interface ImageQuizProps {
   questions: ImageQuestion[];
   onComplete: (answers: Array<{ id: number; pickedIsReliable: boolean | null }>) => void;
   soundEnabled: boolean;
-  onPlayAgain: () => void;
+  onPlayAgain?: () => void;
   onBack: () => void;
 }
 
@@ -16,12 +15,13 @@ const ImageQuiz: React.FC<ImageQuizProps> = ({ questions, onComplete, soundEnabl
   const [shuffledOptions, setShuffledOptions] = useState<{ left: string; right: string; leftIsReliable: boolean }>({ left: '', right: '', leftIsReliable: false });
   const [shakeClass, setShakeClass] = useState<string>('');
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const [collectedAnswers, setCollectedAnswers] = useState<Array<{ id: number; pickedIsReliable: boolean | null }>>([]);
   
-  // Get a random question for this round
+  // Current question based on index
   const currentQuestion = React.useMemo(() => {
-    const randomIndex = Math.floor(Math.random() * questions.length);
-    return questions[randomIndex];
-  }, [questions]);
+    return questions[questionIndex];
+  }, [questions, questionIndex]);
   
   // Add audio refs
   const correctSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -56,11 +56,11 @@ const ImageQuiz: React.FC<ImageQuizProps> = ({ questions, onComplete, soundEnabl
 
   // Shuffle options when component mounts
   useEffect(() => {
+    if (!currentQuestion) return;
     const options = [
       { image: currentQuestion.reliableImage, isReliable: true },
       { image: currentQuestion.unreliableImage, isReliable: false }
     ];
-    
     // Randomly decide which option goes left/right
     const shuffled = Math.random() < 0.5;
     setShuffledOptions({
@@ -68,6 +68,11 @@ const ImageQuiz: React.FC<ImageQuizProps> = ({ questions, onComplete, soundEnabl
       right: shuffled ? options[1].image : options[0].image,
       leftIsReliable: shuffled ? options[0].isReliable : options[1].isReliable
     });
+    // reset selection/feedback for new question
+    setSelectedOption(null);
+    setIsCorrect(null);
+    setShowFeedback(false);
+    setShakeClass('');
   }, [currentQuestion]);
   
   const handleOptionSelect = (isLeft: boolean) => {
@@ -93,14 +98,22 @@ const ImageQuiz: React.FC<ImageQuizProps> = ({ questions, onComplete, soundEnabl
     }
     
     setShowFeedback(true);
+    // Record the answer for this question
+    setCollectedAnswers(prev => [...prev, { id: currentQuestion.id, pickedIsReliable: userSelectedReliable }]);
   };
   
 
   
-  const handlePlayAgain = () => {
-    // Stop all sounds before starting new round
+  const handleNext = () => {
+    // Stop all sounds before moving to next question
     stopAllSounds();
-    onPlayAgain();
+    const nextIndex = questionIndex + 1;
+    if (nextIndex < questions.length) {
+      setQuestionIndex(nextIndex);
+    } else {
+      // Finished all questions
+      onComplete(collectedAnswers);
+    }
   };
 
   return (
@@ -189,14 +202,14 @@ const ImageQuiz: React.FC<ImageQuizProps> = ({ questions, onComplete, soundEnabl
                   {isCorrect ? '✅' : '❌'}
                 </span>
                 <span>
-                  {isCorrect ? 'The image you selected is correct.' : 'The image you selected is incorrect.'}
+                  {isCorrect ? 'The image you selected is reliable.' : 'The image you selected is unreliable.'}
                 </span>
               </div>
               <button 
-                onClick={handlePlayAgain}
+                onClick={handleNext}
                 className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-bold text-base hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                Play Again
+                {questionIndex < questions.length - 1 ? 'Next' : 'Finish'}
               </button>
             </div>
           )}

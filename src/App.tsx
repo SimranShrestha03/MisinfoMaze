@@ -59,7 +59,7 @@ function App() {
       [allImageQuestions[i], allImageQuestions[j]] = [allImageQuestions[j], allImageQuestions[i]];
     }
     
-    return allImageQuestions.slice(0, 10);
+    return allImageQuestions.slice(0, 5);
   }, []);
 
   // Get first 5 questions for scenario quiz in order (no shuffling)
@@ -229,7 +229,7 @@ function App() {
           score={quizType === 'facts' ? calculateScore(answers) : 
                  quizType === 'images' ? calculateImageScore(imageAnswers) : 
                  calculateScenarioScore(scenarioAnswers)}
-          totalQuestions={quizType === 'scenarios' ? 5 : 10}
+          totalQuestions={quizType === 'scenarios' ? 5 : quizType === 'images' ? 5 : 10}
           onReview={handleReview}
           onRestart={handleRestart}
           onBack={handleBackToHome}
